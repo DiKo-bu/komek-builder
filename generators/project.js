@@ -22,9 +22,29 @@ async function generate(projectDir) {
     await fs.ensureDir(path.join(androidDir, "app", "src", "main", "assets"));
     await fs.ensureDir(path.join(androidDir, "app", "src", "main", "res"));
 
-    const config = await fs.readJson(
-        path.join(projectDir, "Android.json")
-    );
+    const configFile = path.join(projectDir, "Android.json");
+
+// Создаём папку проекта
+await fs.ensureDir(projectDir);
+
+// Если Android.json отсутствует — создаём его
+if (!(await fs.pathExists(configFile))) {
+
+    const defaultConfig = {
+        package: "kz.komek.demo",
+        name: "Komek Demo",
+        versionCode: 1,
+        versionName: "1.0"
+    };
+
+    await fs.writeJson(configFile, defaultConfig, {
+        spaces: 4
+    });
+
+    console.log("Android.json создан");
+}
+
+const config = await fs.readJson(configFile);
 
     await manifest.generate(androidDir, config);
     await gradle.generate(androidDir, config);
