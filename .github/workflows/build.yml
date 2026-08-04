@@ -1,0 +1,31 @@
+name: Test Generator
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install packages
+        run: npm install
+
+      - name: Run generator
+        run: node build.js TestApp
+
+      - name: Show generated project
+        run: tree TestApp/build
